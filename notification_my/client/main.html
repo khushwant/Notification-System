@@ -1,0 +1,182 @@
+<head>
+  <title>Notification System</title>
+</head>
+
+	<!-- Layout of how redering is done on page -->
+<template name="Mainlayout">
+	<div name="container">
+		{{> yield "navbar"}}
+		{{> yield "main1"}}
+		{{> yield "main2"}}
+	</div>
+</template>
+	<!-- Navigation Bar -->
+<template name="navbar">
+	<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          	<span class="icon-bar"></span>
+          	<span class="icon-bar"></span>
+          	<span class="icon-bar"></span> 
+          </button>
+	      <a class="navbar-brand" href="/">
+	        Site Ace
+	      </a>
+	    </div>
+	    <div class="collapse navbar-collapse" id="myNavbar">
+	        <ul class="nav navbar-nav">
+	            {{#if currentUser}}
+	              <li class="dropdown">
+	                {{> notifications}}
+	              </li>
+	            {{/if}}
+	        </ul>
+	        <ul class="nav navbar-nav">
+	          <li><a href="#">{{>loginButtons}}</a></li>
+	        </ul>
+      	</div>
+	  </div>
+	</nav>
+</template>
+
+	<!-- Template for including new website -->
+<template name="website_form">
+	
+	<a class="btn btn-default js-toggle-website-form" href="#">
+	  	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+	</a>
+	{{#if currentUser}}	
+		<div id="website_form" class="hidden_div">
+			<form class="js-save-website-form">
+				<div class="form-group">
+				    <label for="url">Site address</label>
+				    <input type="text" class="form-control" id="url" placeholder="http://www.mysite.com">
+				</div>
+				<div class="form-group">
+				    <label for="title">Title</label>
+				    <input type="text" class="form-control" id="title" placeholder="Mysite">
+				</div>
+				<div class="form-group">
+				    <label for="description">Description</label>
+				    <input type="text" class="form-control" id="description" placeholder="I found this site really useful for ...">
+				</div>
+
+				<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+		{{/if}}
+</template>
+
+	<!-- Template that displays several website items -->
+<template name="website_list">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-xs-12">
+				<ol>
+					{{#each websites}}
+						{{>website_item}}
+					{{/each}}
+				</ol>
+			</div>
+			<div class="col-md-6 col-xs-12">
+				{{# if users}}
+					<h3>Users:</h3>
+				{{/if}}
+				<ol>
+					{{#each users}}
+						<li>
+							{{username}}<br/>
+							<button id="{{_id}}" class="js-subscribe">subscribe</button>
+						</li>
+					{{/each}}
+				</ol>
+			</div>
+		</div>
+	</div>
+</template>
+
+	<!--  Template for Notifications   -->
+
+<template name="notifications">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    Notifications
+    {{#if notificationCount}}
+      <span class="badge badge-inverse">{{notificationCount}}</span>
+    {{/if}}
+    <b class="caret"></b>
+  </a>
+  <ul class="notification dropdown-menu">
+    {{#if notificationCount}}
+      {{#each notifications}}
+        {{> notification}}
+      {{/each}}
+    {{else}}
+      <li><span>No Notifications</span></li>
+    {{/if}}
+  </ul>
+</template>
+
+<template name="notification">
+  <li>
+    <a href="/Website:{{id}}">
+      <strong>{{Who_liked}}</strong> liked <strong>{{likes}}</strong>
+    </a>
+  </li>
+</template>
+
+
+	<!-- Template that displays individual website entries -->
+<template name="website_item">
+<li>
+	<a href="{{url}}">{{title}}</a>
+	<p>
+		{{description}}
+	</p>
+	<p>
+		{{createdOn}}
+	</p>
+	<a href="/Website:{{_id}}">detail</a>
+	<a href="#" class="btn btn-default btn-sm js-upvote">
+		{{upvote}}
+          <span class="glyphicon glyphicon-thumbs-up"></span> Like
+	</a>
+	<a href="#" class="btn btn-default btn-sm js-downvote">
+		{{downvote}}
+          <span class="glyphicon glyphicon-thumbs-down"></span> Unlike
+	</a>
+	<!-- you will be putting your up and down vote buttons in here! -->
+</li>
+</template>
+
+	<!-- Template for Commments -->
+<template name="comment">
+		<br/>
+		<form class="js-save-comment">
+			<div class="form-group">
+				    <label for="comment">Site address</label><br/>
+				    <textarea id="commentt" placeholder="Write the comments!!" rows="10" cols="50"></textarea> 
+			</div>
+			<button type="submit" class="btn btn-default">Submit</button>
+		</form>	
+		{{#if array}}
+				<h2>Comments:</h2>
+				{{>array_list}}
+		{{/if}}
+
+</template>
+<template name="array_list">
+	<ol>
+	{{#each array_item}}
+		{{>array_items}}
+	{{/each}}
+	</ol>
+</template>
+<template name="array_items">
+	<h4><a href="#">{{user}}</a>:</h4>
+
+	<p>&emsp;
+		{{data}}
+	</p>
+	<br/>
+</template>
